@@ -9,6 +9,11 @@ import (
 )
 
 func signTask(w http.ResponseWriter, req *http.Request) {
+	if req.Method != "POST" {
+		http.Error(w, "Method Not Allowed", 405)
+		return
+	}
+
 	fmt.Println("\nSignTask is running...")
 
 	//模拟延时
