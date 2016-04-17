@@ -14,6 +14,7 @@ func WebServerInit(url string) {
 	 */
 	http.HandleFunc("/get", getTask)
 	http.HandleFunc("/post", postTask)
+	http.HandleFunc("/sign", signTask)
 
 	//服务器要监听的主机地址和端口号
 	err := http.ListenAndServe(url, nil)
