@@ -4,12 +4,36 @@ import (
 	"fmt"
 	"github.com/sy-vendor/public"
 	"io/ioutil"
+	"net"
 	"net/http"
 	"net/url"
 	"strconv"
 	"strings"
 	"time"
 )
+
+var (
+	httpClient *http.Client
+)
+
+func init() {
+	httpTransport := &http.Transport{
+		Dial: func(netw, addr string) (net.Conn, error) {
+			deadline := time.Now().Add(30 * time.Second)
+			c, err := net.DialTimeout(netw, addr, 20*time.Second)
+			if err != nil {
+				return nil, err
+			}
+
+			c.SetDeadline(deadline)
+			return c, nil
+		},
+		DisableKeepAlives: false,
+	}
+	httpClient = &http.Client{
+		Transport: httpTransport,
+	}
+}
 
 func HttpGet(host string) {
 	resp, err := http.Get(host + "/get?userName=mingzhehao&password=123456")
@@ -64,11 +88,12 @@ func HttpSign(host string) {
 	fmt.Println("sign_str: ", sign_str)
 	sign := public.MakeSign(sign_str)
 
-	resp, err := http.Post(host+"/sign",
+	resp, err := httpClient.Post(host+"/sign",
 		"application/x-www-form-urlencoded",
 		strings.NewReader(params_str+"&sign="+sign))
 	if err != nil {
 		fmt.Println(err)
+		return
 	}
 
 	//important
