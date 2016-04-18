@@ -22,3 +22,10 @@ go run http_server.go &
 ~~~
 go run http_client.go
 ~~~
+
+### 数据库建立
+
+~~~
+mysql -h localhost -u root --password="" < database/schema.default.sql
+~~~
+

@@ -3,6 +3,7 @@ package server
 import (
 	"encoding/json"
 	"fmt"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/sy-vendor/public"
 	"net/http"
 	"time"
@@ -44,16 +45,43 @@ func signTask(w http.ResponseWriter, req *http.Request) {
 	signRemote := public.MakeSign(sign_str)
 
 	if sign == signRemote {
-		result.Code = 100
+		result.Code = 0
 		result.Data = "success"
 		result.Message = "认证成功"
 	} else {
-		result.Code = 101
+		result.Code = 1
 		result.Data = "fail"
 		result.Message = "Sign认证失败"
 	}
 
+	userName := selectQuery()
+	if userName != "err" {
+		result.Data = userName
+	}
 	//向客户端返回JSON数据
 	bytes, _ := json.Marshal(result)
 	fmt.Fprint(w, string(bytes))
+}
+
+func selectQuery() string {
+	// Prepare statement for reading data
+	db := public.GetDbConnetion()
+	defer db.Close()
+	stmtOut, err := db.Prepare("SELECT user_name FROM user WHERE user_id = ?")
+	if err != nil {
+		fmt.Println("select error: ", err.Error())
+		return "err"
+	}
+	defer stmtOut.Close()
+
+	var userName string // we "scan" the result in here
+
+	// Query the square-number of 1
+	err = stmtOut.QueryRow(1).Scan(&userName) // WHERE number = 1
+	if err != nil {
+		fmt.Println("select error: ", err.Error())
+		return "err"
+	}
+	fmt.Println("The user_name of 1 is: ", userName)
+	return userName
 }
