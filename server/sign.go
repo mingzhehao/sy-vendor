@@ -5,6 +5,7 @@ import (
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/sy-vendor/util"
+	log "github.com/thinkboy/log4go"
 	"net/http"
 	"time"
 )
@@ -39,7 +40,7 @@ func signTask(w http.ResponseWriter, req *http.Request) {
 	timestamp := param_timestamp[0]
 
 	s := "uid:" + uid + ",rid:" + rid + ",timestamp:" + timestamp + ",sign:" + sign
-	fmt.Println(s)
+	log.Info("sign information", s)
 
 	_, sign_str := util.MakeParams(uid, rid, timestamp)
 	signRemote := util.MakeSign(sign_str)

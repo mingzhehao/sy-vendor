@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/robfig/config"
 	"github.com/sy-vendor/server"
+	log "github.com/thinkboy/log4go"
 )
 
 func main() {
@@ -12,5 +13,6 @@ func main() {
 	port, _ := c.String("SERVER", "port")
 	url := host + ":" + port
 	fmt.Println("\n当前服务器IP及端口为：", url)
+	log.LoadConfiguration("config/log-conf.xml")
 	server.WebServerInit(url)
 }
