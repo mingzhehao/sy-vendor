@@ -2,7 +2,7 @@ package client
 
 import (
 	"fmt"
-	"github.com/sy-vendor/public"
+	"github.com/sy-vendor/util"
 	"io/ioutil"
 	"net"
 	"net/http"
@@ -83,10 +83,10 @@ func HttpSign(host string) {
 	var rid string = "1"
 	timestamp := time.Now().Unix()
 	timestamp_string := strconv.FormatInt(timestamp, 10) //转换为string
-	params_str, sign_str := public.MakeParams(uid, rid, timestamp_string)
+	params_str, sign_str := util.MakeParams(uid, rid, timestamp_string)
 	fmt.Println("params_str: ", params_str)
 	fmt.Println("sign_str: ", sign_str)
-	sign := public.MakeSign(sign_str)
+	sign := util.MakeSign(sign_str)
 
 	resp, err := httpClient.Post(host+"/sign",
 		"application/x-www-form-urlencoded",

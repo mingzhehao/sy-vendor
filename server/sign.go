@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/sy-vendor/public"
+	"github.com/sy-vendor/util"
 	"net/http"
 	"time"
 )
@@ -41,8 +41,8 @@ func signTask(w http.ResponseWriter, req *http.Request) {
 	s := "uid:" + uid + ",rid:" + rid + ",timestamp:" + timestamp + ",sign:" + sign
 	fmt.Println(s)
 
-	_, sign_str := public.MakeParams(uid, rid, timestamp)
-	signRemote := public.MakeSign(sign_str)
+	_, sign_str := util.MakeParams(uid, rid, timestamp)
+	signRemote := util.MakeSign(sign_str)
 
 	if sign == signRemote {
 		result.Code = 0
@@ -65,7 +65,7 @@ func signTask(w http.ResponseWriter, req *http.Request) {
 
 func selectQuery() string {
 	// Prepare statement for reading data
-	db := public.GetDbConnetion()
+	db := util.GetDbConnetion()
 	defer db.Close()
 	stmtOut, err := db.Prepare("SELECT user_name FROM user WHERE user_id = ?")
 	if err != nil {
