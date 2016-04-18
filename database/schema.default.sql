@@ -19,3 +19,4 @@ CREATE TABLE IF NOT EXISTS `user`
   COLLATE =utf8_unicode_ci
   COMMENT ='用户表';
 
+Insert into user values(1,"sy-vendor",1,1);
