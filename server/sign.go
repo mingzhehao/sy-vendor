@@ -65,7 +65,11 @@ func signTask(w http.ResponseWriter, req *http.Request) {
 
 func selectQuery() string {
 	// Prepare statement for reading data
-	db := util.GetDbConnetion()
+	db, err := util.GetDbConnetion()
+	if err != nil {
+		fmt.Println("conn error: ", err.Error())
+		return "err"
+	}
 	defer db.Close()
 	stmtOut, err := db.Prepare("SELECT user_name FROM user WHERE user_id = ?")
 	if err != nil {
@@ -82,6 +86,5 @@ func selectQuery() string {
 		fmt.Println("select error: ", err.Error())
 		return "err"
 	}
-	fmt.Println("The user_name of 1 is: ", userName)
 	return userName
 }
